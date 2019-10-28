@@ -55,10 +55,18 @@ class HashTable:
 
         # Hash collision
         if self.storage[self._hash_mod(key)]:
+            if self.storage[self._hash_mod(key)].key == key:
+                self.storage[self._hash_mod(key)].value = value
+                print(self.storage[self._hash_mod(key)].value)
+                return
             current = self.storage[self._hash_mod(key)]
-            while current.next is not None:
-                current = current.next
-            current.next = linked
+            while current.key != key:
+                if current.next is None:
+                    current.next = linked
+                    return
+                else:
+                    current = current.next
+            current.value = value
         else:
             self.storage[self._hash_mod(key)] = linked
 
@@ -73,9 +81,13 @@ class HashTable:
         Fill this in.
         '''
         if self.storage[self._hash_mod(key)]:
-            # if self.storage[self._hash_mod(key)].key == key:
-
-            self.storage[self._hash_mod(key)] = None
+            if self.storage[self._hash_mod(key)].key == key:
+                self.storage[self._hash_mod(key)] = None
+            else:
+                current = self.storage[self._hash_mod(key)]
+                while current.key != key:
+                    current = current.next
+                current.next = None
         else:
             print("Key not found.")
 
@@ -108,19 +120,6 @@ class HashTable:
 
         Fill this in.
         '''
-        # new_capacity = self.capacity * 2
-        # new_storage = [None] * new_capacity
-        
-        # for i in range(len(self.storage)):
-        #     if self.storage[i].next is None:
-        #         new_storage[self._hash_mod(self.storage[i].key)] = self.storage[i].value
-        #     else:
-        #         current = self.storage[i]
-        #         while
-        
-        # self.capacity = new_capacity
-        # self.storage = new_storage
-
         old_storage = self.storage
 
         self.capacity *= 2
