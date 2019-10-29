@@ -155,20 +155,22 @@ class TestHashTable(unittest.TestCase):
 
     def test_hash_table_resize(self):
         ht = HashTable(8)
+        print(ht.items)
 
-        ht.insert("key-0", "val-0")
-        ht.insert("key-1", "val-1")
-        ht.insert("key-2", "val-2")
-        ht.insert("key-3", "val-3")
-        ht.insert("key-4", "val-4")
-        ht.insert("key-5", "val-5")
-        ht.insert("key-6", "val-6")
-        ht.insert("key-7", "val-7")
-        ht.insert("key-8", "val-8")
-        ht.insert("key-9", "val-9")
+        ht.insert("key-0", "val-0") # 4
+        ht.insert("key-1", "val-1") # 8
+        ht.insert("key-2", "val-2") # 8
+        ht.insert("key-3", "val-3") # 8
+        ht.insert("key-4", "val-4") # 8
+        ht.insert("key-5", "val-5") # 16
+        ht.insert("key-6", "val-6") # 16
+        ht.insert("key-7", "val-7") # 16
+        ht.insert("key-8", "val-8") # 16
+        ht.insert("key-9", "val-9") # 16
 
-        ht.resize()
-
+        # ht.resize()
+        print(ht.items)
+        print(len(ht.storage))
         self.assertTrue(len(ht.storage) == 16)
 
         return_value = ht.retrieve("key-0")

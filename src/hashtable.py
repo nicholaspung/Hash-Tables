@@ -15,6 +15,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.items = 0
 
 
     def _hash(self, key):
@@ -51,24 +52,47 @@ class HashTable:
 
         Fill this in.
         '''
+
         linked = LinkedPair(key, value)
 
         # Hash collision
         if self.storage[self._hash_mod(key)]:
             if self.storage[self._hash_mod(key)].key == key:
                 self.storage[self._hash_mod(key)].value = value
-                print(self.storage[self._hash_mod(key)].value)
                 return
             current = self.storage[self._hash_mod(key)]
             while current.key != key:
                 if current.next is None:
                     current.next = linked
+                    self.items += 1
+                    # Count number of items in storage
+                    # If > load_factor = 0.7, resize()
+                    load_factor = self.items / self.capacity
+                    numberOfItems = self.items
+                    # print(load_factor)
+                    if load_factor > 0.7:
+                        self.resize('d')
+                        self.items = numberOfItems
+                    elif load_factor < 0.2:
+                        self.resize('h')
+                        self.items = numberOfItems
                     return
                 else:
                     current = current.next
             current.value = value
         else:
             self.storage[self._hash_mod(key)] = linked
+            self.items += 1
+            # Count number of items in storage
+            # If > load_factor = 0.7, resize()
+            load_factor = self.items / self.capacity
+            numberOfItems = self.items
+            if load_factor > 0.7:
+                self.resize('d')
+                self.items = numberOfItems
+            elif load_factor < 0.2:
+                self.resize('h')
+                self.items = numberOfItems
 
 
 
@@ -82,12 +106,14 @@ class HashTable:
         '''
         if self.storage[self._hash_mod(key)]:
             if self.storage[self._hash_mod(key)].key == key:
-                self.storage[self._hash_mod(key)] = None
+                self.storage[self._hash_mod(key)].value = None
+                self.items -= 1
             else:
                 current = self.storage[self._hash_mod(key)]
                 while current.key != key:
                     current = current.next
-                current.next = None
+                current.value = None
+                self.items -= 1
         else:
             print("Key not found.")
 
@@ -113,7 +139,7 @@ class HashTable:
             print("Key not found.")
 
 
-    def resize(self):
+    def resize(self, action='d'):
         '''
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
@@ -122,7 +148,10 @@ class HashTable:
         '''
         old_storage = self.storage
 
-        self.capacity *= 2
+        if action == 'd':
+            self.capacity *= 2
+        elif action == 'h':
+            self.capacity = int(self.capacity / 2)
         self.storage = [None] * self.capacity
 
         for i in range(len(old_storage)):
