@@ -155,7 +155,6 @@ class TestHashTable(unittest.TestCase):
 
     def test_hash_table_resize(self):
         ht = HashTable(8)
-        print(ht.items)
 
         ht.insert("key-0", "val-0") # 4
         ht.insert("key-1", "val-1") # 8
@@ -169,8 +168,6 @@ class TestHashTable(unittest.TestCase):
         ht.insert("key-9", "val-9") # 16
 
         # ht.resize()
-        print(ht.items)
-        print(len(ht.storage))
         self.assertTrue(len(ht.storage) == 16)
 
         return_value = ht.retrieve("key-0")
